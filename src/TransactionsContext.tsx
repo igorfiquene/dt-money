@@ -10,11 +10,34 @@ interface Transaction {
 	createAt: string
 }
 
+// interface TransactionsInput {
+// 	title: string,
+// 	amount: number,
+// 	type: string,
+// 	category: string,
+// }
+
+// When i use Pick, i can choose the types will use from another typography
+
+// type TransactionsInput = Pick<Transaction, 'title' | 'amount' | 'type' | 'category'>
+
+// When i use Omit, i cloned the typography from another type and remove the selected types
+
+type TransactionsInput = Omit<Transaction, 'id' | 'createAt'>
+
 interface TransactionsProviderProps {
 	children: ReactNode
 }
 
-export const TransactionsContext = createContext<Transaction[]>([])
+interface TransactionsContextData {
+	transactions: Transaction[],
+	createTransaction: (transaction: TransactionsInput) => void;
+}
+
+
+export const TransactionsContext = createContext<TransactionsContextData>(
+	{} as TransactionsContextData
+)
 
 export function TransactionsProvider({ children }: TransactionsProviderProps) {
 	const [transactions, setTransactions] = useState<Transaction[]>([])
@@ -24,8 +47,12 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
 			.then(( { data } ) => setTransactions(data.transactions))
 	}, [])
 
+	function createTransaction(transaction: TransactionsInput) {
+		api.post('/transactions', transaction)
+	}
+
 	return (
-		<TransactionsContext.Provider value={transactions}>
+		<TransactionsContext.Provider value={{ transactions, createTransaction }}> 
 			{children}
 		</TransactionsContext.Provider>
 	)
