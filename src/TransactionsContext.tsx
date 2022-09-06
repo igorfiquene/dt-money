@@ -18,10 +18,10 @@ interface Transaction {
 // }
 
 // When i use Pick, i can choose the types will use from another typography
-
-// type TransactionsInput = Pick<Transaction, 'title' | 'amount' | 'type' | 'category'>
+// EXAMPLE: type TransactionsInput = Pick<Transaction, 'title' | 'amount' | 'type' | 'category'>
 
 // When i use Omit, i cloned the typography from another type and remove the selected types
+// EXAMPLE: type TransactionsInput = Omit<Transaction, 'id' | 'createAt'>
 
 type TransactionsInput = Omit<Transaction, 'id' | 'createAt'>
 
@@ -31,9 +31,8 @@ interface TransactionsProviderProps {
 
 interface TransactionsContextData {
 	transactions: Transaction[],
-	createTransaction: (transaction: TransactionsInput) => void;
+	createTransaction: (transaction: TransactionsInput) => Promise<void>;
 }
-
 
 export const TransactionsContext = createContext<TransactionsContextData>(
 	{} as TransactionsContextData
@@ -47,8 +46,11 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
 			.then(( { data } ) => setTransactions(data.transactions))
 	}, [])
 
-	function createTransaction(transaction: TransactionsInput) {
-		api.post('/transactions', transaction)
+	async function createTransaction(transactionInput: TransactionsInput) {
+		const response = await api.post('/transactions', transactionInput)
+		const { transaction } = response.data
+		
+		setTransactions([...transactions, transaction])
 	}
 
 	return (
