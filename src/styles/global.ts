@@ -10,7 +10,9 @@ export const GlobalStyle = createGlobalStyle`
 		--blue-light: #6933FF;
 
 		--text-title: #363f5f;
+		--text-white: #ffffff;
 		--text-body: #969cb3;
+
 		--input-background: #e7e9ee;
 		--input-border: #d7d7d7;
 

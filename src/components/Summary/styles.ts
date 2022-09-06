@@ -26,4 +26,9 @@ export const Container = styled.div`
 			line-height: 3rem;
 		}
 	}
+
+	.total {
+		background-color: var(--green);
+		color: var(--text-white);
+	}
 `
